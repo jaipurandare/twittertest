@@ -6,12 +6,13 @@ class TweetsFeedController < ApplicationController
   def index
     @tweets_feed  = []
     @tweets_by_location = {}
-    
+    @tweets_to_show = []
     puts params.inspect
     if params.has_key?("search_string")
       @display_option = params["display_option"]
+      @search_string = params["search_string"]
       begin
-        @tweets_feed = TwitterFeedService.fetch(params["search_string"],params["number_of_tweets"])  
+        @tweets_feed = TwitterFeedService.fetch(@search_string,params["number_of_tweets"])  
         #@tweets_feed = get_tweets
         if @display_option.eql? "show_by_location"
           sort_tweets
@@ -27,10 +28,15 @@ class TweetsFeedController < ApplicationController
   end
 
   def show
-    puts "id - #{params['id']}"
-    @tweets_by_location = JSON.parse(IO.read("tweets.json"))
-    @tweets_to_show = @tweets_by_location[params["id"]]
-    @display_option = "show_by_location"
+    if params.has_key?("search_string") and params.has_key?("display_option")
+      index
+    else
+      puts "id - #{params['id']}"
+      @tweets_by_location = JSON.parse(IO.read("tweets.json"))
+      @tweets_to_show = @tweets_by_location[params["id"]]
+      @search_string = params["search_string"]
+      @display_option = "show_by_location"
+    end
     render "index"
   end
 

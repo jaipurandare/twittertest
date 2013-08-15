@@ -3,6 +3,7 @@
   <form id="feed_criterion" action="#">
     Search String : <input type="text" id="search_string" name="search_string" size="40"/><br/><br/>
     Number of tweets : <select id = "number_of_tweets" name="number_of_tweets"><br/><br/>
+      <option id="number_of_tweets_2" value="2" selected="selected"> 2  </option> 
       <option id="number_of_tweets_10" value="10" selected="selected"> 10 </option> 
       <option id="number_of_tweets_20" value="20"> 20 </option>
       <option id="number_of_tweets_50" value="50"> 50 </option>
@@ -41,6 +42,7 @@
 <%end%>
 <% if @display_option == "show_by_location" && @error_message.blank?%>
   <div id="show_by_location">
+    <span> Tweets for search string - <%= @search_string %> </span> <br/>
     <table border="1">
     <tr>
       <th>Location</th>
@@ -49,7 +51,7 @@
     <% @tweets_by_location.each do |location,values| %>
       <tr>
       <td><%= location%> </td>
-      <td align="center"><%= link_to values.size.to_s, "/tweets_feed/#{location}" %> </td>
+      <td align="center"><%= link_to values.size.to_s, "/tweets_feed/#{location}?search_string=#{@search_string}" %> </td>
       </tr>
     <% end %>
   </table>
