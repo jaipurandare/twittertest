@@ -1,5 +1,6 @@
 require_relative '../services/twitter_feed_service'
 require_relative '../services/google_map_service'
+require 'json'
 
 class TweetsFeedController < ApplicationController
   def index
@@ -10,10 +11,11 @@ class TweetsFeedController < ApplicationController
     if params.has_key?("search_string")
       @display_option = params["display_option"]
       begin
-#        @tweets_feed = TwitterFeedService.fetch(params["search_string"],params["number_of_tweets"])  
+        #@tweets_feed = TwitterFeedService.fetch(params["search_string"],params["number_of_tweets"])  
         @tweets_feed = get_tweets
         if @display_option.eql? "show_by_location"
           sort_tweets
+          write_tweets_to_file
           puts @tweets_by_location
         end
       rescue TweetStream::ReconnectError => re
@@ -24,6 +26,14 @@ class TweetsFeedController < ApplicationController
     end
   end
 
+  def show
+    puts "id - #{params['id']}"
+    @tweets_by_location = JSON.parse(IO.read("tweets.json"))
+    @tweets_to_show = @tweets_by_location[params["id"]]
+    @display_option = "show_by_location"
+    render "index"
+  end
+
   private
 
   def sort_tweets
@@ -32,6 +42,12 @@ class TweetsFeedController < ApplicationController
       @tweets_by_location[tweet_location] = [] unless @tweets_by_location.has_key? tweet_location
       @tweets_by_location[tweet_location] << tweet 
     end  
+  end
+
+  def write_tweets_to_file
+    fJson = File.open("tweets.json","w")
+    fJson.write(@tweets_by_location.to_json)
+    fJson.close
   end
   
   def get_tweets

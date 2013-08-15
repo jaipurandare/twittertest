@@ -1,18 +1,20 @@
+<h2>Twitter Search Pilot </h2>
 <div>
   <form id="feed_criterion" action="#">
-    Search String : <input type="text" id="search_string" name="search_string"/><br/><br/>
+    Search String : <input type="text" id="search_string" name="search_string" size="40"/><br/><br/>
     Number of tweets : <select id = "number_of_tweets" name="number_of_tweets"><br/><br/>
       <option id="number_of_tweets_2" value="2" selected="selected"> 2 </option> 
       <option id="number_of_tweets_3" value="3"> 3 </option>
-      <option id="number_of_tweets_4" value="50"> 50 </option>
+      <option id="number_of_tweets_4" value="10"> 10 </option>
       </select><br/><br/>
       <div>
-        <label for="display_option">Option:</label>
+        <label for="display_option">Your Options:</label>
           <% [ 'show_by_location', 'show_tweets'].each do |option| %>
             <br><%= radio_button_tag 'display_option', option, @display_option == option %>
           <%= option.humanize %>
         <% end %>
       </div>
+      <br/>
        <input type="submit" value="Submit"/>
   </form>
 </div>
@@ -37,33 +39,35 @@
   </div>
 <%end%>
 <% if @display_option == "show_by_location" && @error_message.blank?%>
-<div id="show_by_location">
-  <table>
-    <th><td>Location</td>
-      <td>Number of tweets </td>
-    </th>
+  <div id="show_by_location">
+    <table border="1">
+    <tr>
+      <th>Location</th>
+      <th>Number of tweets </th>
+    </tr>
     <% @tweets_by_location.each do |location,values| %>
       <tr>
       <td><%= location%> </td>
-      <td><%= link_to values.size.to_s , "/tweets_feed/#{location}?display_option=show_by_location" %> </td>
+      <td align="center"><%= link_to values.size.to_s, "/tweets_feed/#{location}" %> </td>
       </tr>
     <% end %>
   </table>
   </div>
 <% end %>
-
-<% if @display_option == "show_by_location" and not @tweets_to_show.blank? %>
-<div id="tweets_feed_by_location">
+<br/><br/>
+<% if @display_option == "show_by_location" and not @tweets_to_show.blank?%>
+<div id="tweets_feed_show">
   <% @tweets_to_show.each do |tweet| %>
-    <span> Tweet Text : <%= tweet["text"]%> </span> <br/>
-    <span> Tweet Created at : <%= tweet["created_at"]%> </span> <br/>
-    <span> Tweet location : <%= tweet["location"]%> </span> <br/>
+    <span> <b>Tweet Text :</b> <%= tweet["text"]%> </span> <br/>
+    <span> <b>Tweet Created at :</b> <%= tweet["created_at"]%> </span> <br/>
+    <span> <b>Tweet location : </b> <%= tweet["location"]%> </span> <br/>
     <% if not tweet["geo"].blank?  %>
-      <span> Tweet geo: <%= tweet["geo"]%> </span> <br/>
+      <span><b>Tweet geo:</b> <%= tweet["geo"]%> </span> <br/>
     <% end %>
     <% if not tweet["coordinates"].blank?  %>
-      <span> Tweet coordinates: <%= tweet["coordinates"]%> </span> <br/>
+      <span><b>Tweet coordinates:</b> <%= tweet["coordinates"]%> </span> <br/>
     <% end %>
+    <br/>
   <%end%>
-</div>
-<%end %>
+  </div>
+<%end%>
