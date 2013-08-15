@@ -11,8 +11,8 @@ class TweetsFeedController < ApplicationController
     if params.has_key?("search_string")
       @display_option = params["display_option"]
       begin
-        #@tweets_feed = TwitterFeedService.fetch(params["search_string"],params["number_of_tweets"])  
-        @tweets_feed = get_tweets
+        @tweets_feed = TwitterFeedService.fetch(params["search_string"],params["number_of_tweets"])  
+        #@tweets_feed = get_tweets
         if @display_option.eql? "show_by_location"
           sort_tweets
           write_tweets_to_file
